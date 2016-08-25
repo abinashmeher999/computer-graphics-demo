@@ -1,4 +1,5 @@
 all: 3ddss 3ddtr
+	node index.js
 
 3ddss: 3ddss.cpp 3ddss.hpp
 	g++ -std=c++11 3ddss.cpp -o 3ddss
