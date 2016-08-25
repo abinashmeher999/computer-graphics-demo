@@ -1,0 +1,21 @@
+{
+  "name": "computer-graphics-demo",
+  "version": "1.0.0",
+  "description": "A website for B.Tech Project",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "method-override": "^2.3.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "computer-graphics",
+    "demo"
+  ],
+  "author": "Abinash Meher",
+  "license": "MIT"
+}

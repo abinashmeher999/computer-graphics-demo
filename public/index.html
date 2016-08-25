@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Computer Graphics BTP Demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+      body {
+        font-family: Monospace;
+        background-color: #000000;
+        margin: 0px;
+        overflow: hidden;
+      }
+
+      #info {
+        color: #fff;
+        position: absolute;
+        top: 10px;
+        width: 100%;
+        text-align: center;
+        z-index: 100;
+        display:block;
+
+      }
+
+      a { color: skyblue }
+      .button { background:#999; color:#eee; padding:0.2em 0.5em; cursor:pointer }
+      .highlight { background:orange; color:#fff; }
+
+      span {
+        display: inline-block;
+        width: 60px;
+        float: left;
+        text-align: center;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="info">
+      <div>
+        <h3>3D DSS</h3>
+        Start: <input type="text" id="3ddss_start" placeholder="x1 y1 z1" value="5 0 0"></input>
+        End:   <input type="text" id="3ddss_end" placeholder="x2 y2 z2" value="0 10 0"></input>
+        <button onclick="draw_dss()">Draw</button>
+      </div>
+      <div>
+        <h3>3D Triangle</h3>
+        Vertex 1: <input type="text" id="3ddtr_v1" placeholder="x1 y1 z1" value="-10 0 0"></input>
+        Vertex 2: <input type="text" id="3ddtr_v2" placeholder="x2 y2 z2" value="0 -10 0"></input>
+        Vertex 3: <input type="text" id="3ddtr_v3" placeholder="x3 y3 z3" value="0 0 -10"></input>
+        <button onclick="draw_dtr()">Draw</button>
+      </div>
+    </div>
+
+    <script src="three.js"></script>
+    <script src="OBJLoader.js"></script>
+
+    <script src="Detector.js"></script>
+    <script src="OrbitControls.js"></script>
+
+    <script src="jszip.min.js"></script>
+
+    <script>
+
+      if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+      var camera, scene, renderer, axes;
+
+      init();
+
+      function init() {
+
+        scene = new THREE.Scene();
+        scene.add( new THREE.AmbientLight( 0x999999 ) );
+
+        var pointLight = new THREE.PointLight( 0xffffff, 0.6 );
+        pointLight.position.set( 80, 90, 150 );
+        scene.add( pointLight );
+
+        var pointLight2 = new THREE.PointLight( 0xffffff, 0.6);
+        pointLight2.position.set(-80, -90, -150);
+        scene.add(pointLight2);
+
+        camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
+        camera.position.set( 30, 30, 30 );
+        camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+        // Z is up for objects intended to be 3D printed.
+
+        <!--camera.up.set( 0, 0, 1 );-->
+        <!--camera.position.set( -80, -90, 150 );-->
+
+        //camera.add( new THREE.PointLight( 0xffffff, 0.8 ) );
+
+        scene.add( camera );
+
+        renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer.setClearColor( 0x333333 );
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.body.appendChild( renderer.domElement );
+
+        axes = buildAxes( 1000 );
+        scene.add(axes);
+
+        var loader = new THREE.OBJLoader();
+        loader.load( '/3ddss/5/0/0/0/10/0', function ( object ) {
+          object.name = "uno";
+          scene.add( object );
+          render();
+
+        } );
+
+        var controls = new THREE.OrbitControls( camera, renderer.domElement );
+        <!--controls = new THREE.TrackballControls( camera );-->
+        controls.rotateSpeed = 1.0;
+        controls.zoomSpeed = 0.8;
+        controls.panSpeed = 0.8;
+
+        controls.enableZoom = true;
+        controls.enablePan = true;
+
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.3;
+        controls.addEventListener( 'change', render );
+        <!--controls.target.set( 80, 65, 35 );-->
+        controls.update();
+
+        window.addEventListener( 'resize', onWindowResize, false );
+
+      }
+
+      function buildAxes( length ) {
+        var axes = new THREE.Object3D();
+
+        axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( length, 0, 0 ), 0xFF0000, false ) ); // +X
+        axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( -length, 0, 0 ), 0xFF0000, true) ); // -X
+        axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, length, 0 ), 0x00FF00, false ) ); // +Y
+        axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, -length, 0 ), 0x00FF00, true ) ); // -Y
+        axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, length ), 0x0000FF, false ) ); // +Z
+        axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -length ), 0x0000FF, true ) ); // -Z
+
+        return axes;
+
+      }
+
+      function buildAxis( src, dst, colorHex, dashed ) {
+        var geom = new THREE.Geometry(),
+          mat; 
+
+          if(dashed) {
+            mat = new THREE.LineDashedMaterial({ linewidth: 1, color: colorHex, dashSize: 2, gapSize: 1 });
+          } else {
+            mat = new THREE.LineBasicMaterial({ linewidth: 1, color: colorHex });
+          }
+
+          geom.vertices.push( src.clone() );
+          geom.vertices.push( dst.clone() );
+          geom.computeLineDistances(); // This one is SUPER important, otherwise dashed lines will appear as simple plain lines
+
+          var axis = new THREE.Line( geom, mat, THREE.LineSegments );
+
+          return axis;
+
+      }
+
+      function onWindowResize() {
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+        render();
+
+      }
+
+      function render() {
+
+        renderer.render( scene, camera );
+
+      }
+
+      function draw_dss() {
+        var selectedObject = scene.getObjectByName("uno");
+        scene.remove(selectedObject);
+        var loader = new THREE.OBJLoader();
+        var start = document.getElementById("3ddss_start").value;
+        var end = document.getElementById("3ddss_end").value;
+        loader.load( '/3ddss/' + start.split(" ").join("/") + "/" + end.split(" ").join("/"), function ( object ) {
+          object.name = "uno";
+          scene.add( object );
+          render();
+        } );
+      }
+
+      function draw_dtr() {
+        var selectedObject = scene.getObjectByName("uno");
+        scene.remove(selectedObject);
+        var loader = new THREE.OBJLoader();
+        var v1 = document.getElementById("3ddtr_v1").value;
+        var v2 = document.getElementById("3ddtr_v2").value;
+        var v3 = document.getElementById("3ddtr_v3").value;
+        loader.load( '/3ddtr/' + v1.split(" ").join("/") + "/" + v2.split(" ").join("/") + "/" + v3.split(" ").join("/"), function ( object ) {
+          object.name = "uno";
+          scene.add( object );
+          render();
+        } );
+      }
+    </script>
+  </body>
+</html>
+
