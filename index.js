@@ -1,25 +1,26 @@
-express = require('express');
-bodyParser = require('body-parser');
-methodOverride = require('method-override');
+var express = require('express')
+var bodyParser = require('body-parser')
+var methodOverride = require('method-override')
 
 // Create the application.
-var app = express();
-app.set('port', (process.env.PORT || 3000));
+var app = express()
+app.set('port', (process.env.PORT || 3000))
 
 // Add Middleware necessary for REST API's
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
-app.use(methodOverride('X-HTTP-Method-Override'));
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
+app.use(methodOverride('X-HTTP-Method-Override'))
 
 // CORS Support
-app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    res.header('Access-Control-Allow-Headers', 'Content-Type')
+    next()
+})
 
 app.use(express.static('public'));
+app.use(express.static('bower_components'))
 
 function sh(cmd) {
     var exec = require('child_process').execSync;

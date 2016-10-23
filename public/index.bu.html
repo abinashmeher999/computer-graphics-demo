@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Computer Graphics BTP Demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <script type="text/javascript" src="bower_components/dat.gui/dat.gui.min.js"></script>
+  <style>
+    /*body {*/
+    /*font-family: Monospace,serif;*/
+    /*background-color: #000000;*/
+    /*margin: 0px;*/
+    /*overflow: hidden;*/
+    /*}*/
+
+    canvas {
+      width: 100%;
+      height: auto;
+    }
+
+    /*#info {*/
+    /*color: #fff;*/
+    /*position: absolute;*/
+    /*top: 10px;*/
+    /*width: 100%;*/
+    /*text-align: center;*/
+    /*z-index: 100;*/
+    /*display:block;*/
+
+    /*}*/
+
+    /*a { color: skyblue }*/
+    /*.button { background:#999; color:#eee; padding:0.2em 0.5em; cursor:pointer }*/
+    /*.highlight { background:orange; color:#fff; }*/
+
+    /*span {*/
+    /*display: inline-block;*/
+    /*width: 60px;*/
+    /*float: left;*/
+    /*text-align: center;*/
+    /*}*/
+
+  </style>
+</head>
+<body>
+<div class="container-fluid" id="outermost">
+  <div class="row">
+    <div class="col-md-2">
+      <div class="row">
+        <div id="sidebar" class="panel-group">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" href="#collapse1">Shapes</a>
+              </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+              <div class="panel-body">
+                <div class="col-lg-3" id="info">
+                  <div class="row">
+                    <h3>3D DSS</h3>
+                    Start: <input type="text" id="3ddss_start" placeholder="x1 y1 z1" value="5 0 0"/>
+                    End:   <input type="text" id="3ddss_end" placeholder="x2 y2 z2" value="0 10 0"/>
+                    <button onclick="draw_dss()">Draw</button>
+                  </div>
+                  <div class="row">
+                    <h3>3D Triangle</h3>
+                    Vertex 1: <input type="text" id="3ddtr_v1" placeholder="x1 y1 z1" value="-10 0 0"/>
+                    Vertex 2: <input type="text" id="3ddtr_v2" placeholder="x2 y2 z2" value="0 -10 0"/>
+                    Vertex 3: <input type="text" id="3ddtr_v3" placeholder="x3 y3 z3" value="0 0 -10"/>
+                    <button onclick="draw_dtr()">Draw</button>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-footer">More to be added</div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" href="#obj-pan">Obj files</a>
+              </h4>
+            </div>
+            <div id="obj-pan" class="panel-collapse collapse">
+              <div class="panel-body">
+                Lol
+              </div>
+              <div class="panel-footer">More to come</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="example"> <!-- http://www.bootply.com/89084# -->
+        <div class="container">
+          <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                    <span class="glyphicon glyphicon-minus"></span>
+                    Collapsible Group Item #1
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseOne" class="panel-collapse collapse in">
+                <div class="panel-body">
+                  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Collapsible Group Item #2
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseTwo" class="panel-collapse collapse">
+                <div class="panel-body">
+                  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Collapsible Group Item #3
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseThree" class="panel-collapse collapse">
+                <div class="panel-body">
+                  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-10"><div class="row panel panel-default"><div class="panel-body" id="drawing-panel"></div></div></div>
+  </div>
+  <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
+
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+
+  <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <!--<link rel="stylesheet" type="text/css" ref="src/css/vendor/bower.css">-->
+  <!--<script src="src/js/vendor/bower.js"></script>-->
+
+
+  <script src="three.js"></script>
+  <script src="OBJLoader.js"></script>
+
+  <script src="Detector.js"></script>
+  <script src="OrbitControls.js"></script>
+
+  <script src="jszip.min.js"></script>
+
+  <script>
+
+    if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+    var camera, scene, renderer;
+    var cameraControls;
+    var effectController;
+    var teapotSize = 400;
+    var ambientLight, light;
+    var skybox;
+
+    var tess = -1;	// force initialization
+    var bBottom ;
+    var bLid;
+    var bBody;
+    var bFitLid;
+    var bNonBlinn;
+    var shading;
+    var wireMaterial, flatMaterial, gouraudMaterial, phongMaterial, texturedMaterial, reflectiveMaterial;
+
+    var textureCube;
+
+    // allocate these just once
+    var diffuseColor = new THREE.Color();
+    var specularColor = new THREE.Color();
+
+
+    init();
+
+    function init() {
+
+      scene = new THREE.Scene();
+      scene.add( new THREE.AmbientLight( 0x999999 ) );
+
+      var pointLight = new THREE.PointLight( 0xffffff, 0.6 );
+      pointLight.position.set( 80, 90, 150 );
+      scene.add( pointLight );
+
+      var pointLight2 = new THREE.PointLight( 0xffffff, 0.6);
+      pointLight2.position.set(-80, -90, -150);
+      scene.add(pointLight2);
+
+      camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
+      camera.position.set( 30, 30, 30 );
+      camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+      // Z is up for objects intended to be 3D printed.
+
+      <!--camera.up.set( 0, 0, 1 );-->
+      <!--camera.position.set( -80, -90, 150 );-->
+
+      //camera.add( new THREE.PointLight( 0xffffff, 0.8 ) );
+
+      scene.add( camera );
+
+      renderer = new THREE.WebGLRenderer( { antialias: true } );
+      renderer.setClearColor( 0x333333 );
+      renderer.setPixelRatio( window.devicePixelRatio );
+      var drawing_panel = document.getElementById("drawing-panel");
+      renderer.setSize(drawing_panel.offsetWidth, drawing_panel.offsetHeight);
+      drawing_panel.appendChild( renderer.domElement );
+
+
+      axes = buildAxes( 1000 );
+      scene.add(axes);
+
+      var loader = new THREE.OBJLoader();
+      loader.load( '/3ddss/5/0/0/0/10/0', function ( object ) {
+        object.name = "uno";
+        scene.add( object );
+        render();
+
+      } );
+
+      var controls = new THREE.OrbitControls( camera, renderer.domElement );
+      <!--controls = new THREE.TrackballControls( camera );-->
+      controls.rotateSpeed = 1.0;
+      controls.zoomSpeed = 0.8;
+      controls.panSpeed = 0.8;
+
+      controls.enableZoom = true;
+      controls.enablePan = true;
+
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.3;
+      controls.addEventListener( 'change', render );
+      <!--controls.target.set( 80, 65, 35 );-->
+      controls.update();
+
+      window.addEventListener( 'resize', onWindowResize, false );
+
+      setupGui();
+
+    }
+
+    function buildAxes( length ) {
+      var axes = new THREE.Object3D();
+
+      axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( length, 0, 0 ), 0xFF0000, false ) ); // +X
+      axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( -length, 0, 0 ), 0xFF0000, true) ); // -X
+      axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, length, 0 ), 0x00FF00, false ) ); // +Y
+      axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, -length, 0 ), 0x00FF00, true ) ); // -Y
+      axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, length ), 0x0000FF, false ) ); // +Z
+      axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -length ), 0x0000FF, true ) ); // -Z
+
+      return axes;
+
+    }
+
+    function buildAxis( src, dst, colorHex, dashed ) {
+      var geom = new THREE.Geometry(),
+              mat;
+
+      if(dashed) {
+        mat = new THREE.LineDashedMaterial({ linewidth: 1, color: colorHex, dashSize: 2, gapSize: 1 });
+      } else {
+        mat = new THREE.LineBasicMaterial({ linewidth: 1, color: colorHex });
+      }
+
+      geom.vertices.push( src.clone() );
+      geom.vertices.push( dst.clone() );
+      geom.computeLineDistances(); // This one is SUPER important, otherwise dashed lines will appear as simple plain lines
+
+      var axis = new THREE.Line( geom, mat, THREE.LineSegments );
+
+      return axis;
+
+    }
+
+    function onWindowResize() {
+
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize( window.innerWidth, window.innerHeight );
+
+      render();
+
+    }
+
+    //    function render() {
+    //
+    //      renderer.render( scene, camera );
+    //
+    //    }
+
+    function render() {
+      if ( effectController.newTess !== tess ||
+              effectController.bottom !== bBottom ||
+              effectController.lid !== bLid ||
+              effectController.body !== bBody ||
+              effectController.fitLid !== bFitLid ||
+              effectController.nonblinn !== bNonBlinn ||
+              effectController.newShading !== shading )
+      {
+        tess = effectController.newTess;
+        bBottom = effectController.bottom;
+        bLid = effectController.lid;
+        bBody = effectController.body;
+        bFitLid = effectController.fitLid;
+        bNonBlinn = effectController.nonblinn;
+        shading = effectController.newShading;
+        createNewTeapot();
+      }
+      // We're a bit lazy here. We could check to see if any material attributes changed and update
+      // only if they have. But, these calls are cheap enough and this is just a demo.
+      phongMaterial.shininess = effectController.shininess;
+      texturedMaterial.shininess = effectController.shininess;
+      diffuseColor.setHSL( effectController.hue, effectController.saturation, effectController.lightness );
+      if ( effectController.metallic )
+      {
+        // make colors match to give a more metallic look
+        specularColor.copy( diffuseColor );
+      }
+      else
+      {
+        // more of a plastic look
+        specularColor.setRGB( 1, 1, 1 );
+      }
+      diffuseColor.multiplyScalar( effectController.kd );
+      flatMaterial.color.copy( diffuseColor );
+      gouraudMaterial.color.copy( diffuseColor );
+      phongMaterial.color.copy( diffuseColor );
+      texturedMaterial.color.copy( diffuseColor );
+      specularColor.multiplyScalar( effectController.ks );
+      phongMaterial.specular.copy( specularColor );
+      texturedMaterial.specular.copy( specularColor );
+      // Ambient's actually controlled by the light for this demo
+      ambientLight.color.setHSL( effectController.hue, effectController.saturation, effectController.lightness * effectController.ka );
+      light.position.set( effectController.lx, effectController.ly, effectController.lz );
+      light.color.setHSL( effectController.lhue, effectController.lsaturation, effectController.llightness );
+      // skybox is rendered separately, so that it is always behind the teapot.
+      if ( shading === "reflective" ) {
+        scene.background = textureCube;
+      } else {
+        scene.background = null;
+      }
+      renderer.render( scene, camera );
+    }
+
+    // Whenever the teapot changes, the scene is rebuilt from scratch (not much to it).
+    function createNewTeapot() {
+      if ( teapot !== undefined ) {
+        teapot.geometry.dispose();
+        scene.remove( teapot );
+      }
+      var teapotGeometry = new THREE.TeapotBufferGeometry( teapotSize,
+              tess,
+              effectController.bottom,
+              effectController.lid,
+              effectController.body,
+              effectController.fitLid,
+              ! effectController.nonblinn );
+      teapot = new THREE.Mesh(
+              teapotGeometry,
+              shading === "wireframe" ? wireMaterial : (
+                      shading === "flat" ? flatMaterial : (
+                              shading === "smooth" ? gouraudMaterial : (
+                                      shading === "glossy" ? phongMaterial : (
+                                              shading === "textured" ? texturedMaterial : reflectiveMaterial ) ) ) ) );	// if no match, pick Phong
+      scene.add( teapot );
+    }
+
+    function draw_dss() {
+      var selectedObject = scene.getObjectByName("uno");
+      scene.remove(selectedObject);
+      var loader = new THREE.OBJLoader();
+      var start = document.getElementById("3ddss_start").value;
+      var end = document.getElementById("3ddss_end").value;
+      loader.load( '/3ddss/' + start.split(" ").join("/") + "/" + end.split(" ").join("/"), function ( object ) {
+        object.name = "uno";
+        scene.add( object );
+        render();
+      } );
+    }
+
+    function draw_dtr() {
+      var selectedObject = scene.getObjectByName("uno");
+      scene.remove(selectedObject);
+      var loader = new THREE.OBJLoader();
+      var v1 = document.getElementById("3ddtr_v1").value;
+      var v2 = document.getElementById("3ddtr_v2").value;
+      var v3 = document.getElementById("3ddtr_v3").value;
+      loader.load( '/3ddtr/' + v1.split(" ").join("/") + "/" + v2.split(" ").join("/") + "/" + v3.split(" ").join("/"), function ( object ) {
+        object.name = "uno";
+        scene.add( object );
+        render();
+      } );
+    }
+
+    function setupGui() {
+
+      effectController = {
+
+        shininess: 40.0,
+        ka: 0.17,
+        kd: 0.51,
+        ks: 0.2,
+        metallic: true,
+
+        hue:		0.121,
+        saturation: 0.73,
+        lightness:  0.66,
+
+        lhue:		 0.04,
+        lsaturation: 0.01,	// non-zero so that fractions will be shown
+        llightness:  1.0,
+
+        // bizarrely, if you initialize these with negative numbers, the sliders
+        // will not show any decimal places.
+        lx: 0.32,
+        ly: 0.39,
+        lz: 0.7,
+        newTess: 15,
+        bottom: true,
+        lid: true,
+        body: true,
+        fitLid: false,
+        nonblinn: false,
+        newShading: "glossy"
+      };
+
+      var h;
+
+      var gui = new dat.GUI();
+
+      // material (attributes)
+
+      h = gui.addFolder( "Material control" );
+
+      h.add( effectController, "shininess", 1.0, 400.0, 1.0 ).name( "shininess" ).onChange( render );
+      h.add( effectController, "kd", 0.0, 1.0, 0.025 ).name( "diffuse strength" ).onChange( render );
+      h.add( effectController, "ks", 0.0, 1.0, 0.025 ).name( "specular strength" ).onChange( render );
+      h.add( effectController, "metallic" ).onChange( render );
+
+      // material (color)
+
+      h = gui.addFolder( "Material color" );
+
+      h.add( effectController, "hue", 0.0, 1.0, 0.025 ).name( "hue" ).onChange( render );
+      h.add( effectController, "saturation", 0.0, 1.0, 0.025 ).name( "saturation" ).onChange( render );
+      h.add( effectController, "lightness", 0.0, 1.0, 0.025 ).name( "lightness" ).onChange( render );
+
+      // light (point)
+
+      h = gui.addFolder( "Lighting" );
+
+      h.add( effectController, "lhue", 0.0, 1.0, 0.025 ).name( "hue" ).onChange( render );
+      h.add( effectController, "lsaturation", 0.0, 1.0, 0.025 ).name( "saturation" ).onChange( render );
+      h.add( effectController, "llightness", 0.0, 1.0, 0.025 ).name( "lightness" ).onChange( render );
+      h.add( effectController, "ka", 0.0, 1.0, 0.025 ).name( "ambient" ).onChange( render );
+
+      // light (directional)
+
+      h = gui.addFolder( "Light direction" );
+
+      h.add( effectController, "lx", -1.0, 1.0, 0.025 ).name( "x" ).onChange( render );
+      h.add( effectController, "ly", -1.0, 1.0, 0.025 ).name( "y" ).onChange( render );
+      h.add( effectController, "lz", -1.0, 1.0, 0.025 ).name( "z" ).onChange( render );
+
+      h = gui.addFolder( "Tessellation control" );
+      h.add( effectController, "newTess", [ 2, 3, 4, 5, 6, 8, 10, 15, 20, 30, 40, 50 ] ).name( "Tessellation Level" ).onChange( render );
+      h.add( effectController, "lid" ).name( "display lid" ).onChange( render );
+      h.add( effectController, "body" ).name( "display body" ).onChange( render );
+      h.add( effectController, "bottom" ).name( "display bottom" ).onChange( render );
+      h.add( effectController, "fitLid" ).name( "snug lid" ).onChange( render );
+      h.add( effectController, "nonblinn" ).name( "original scale" ).onChange( render );
+
+      // shading
+      h = gui.add( effectController, "newShading", [ "wireframe", "flat", "smooth", "glossy", "textured", "reflective" ] ).name( "Shading" ).onChange( render );
+
+    }
+  </script>
+</div>
+</body>
+</html>
+

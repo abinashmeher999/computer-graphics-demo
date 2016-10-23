@@ -638,7 +638,10 @@ int main (int argc, char** argv) {
     file_name   << "test_triangle.obj";
 
     std::vector<tdp> triangle = FillTriangle(a, b, c, 1);
-    DPRINT(triangle.size());
-    print_tdp_set(triangle);
-    make_obj(triangle, file_name.str());
+    for(auto p : triangle) {
+        std::cout << p.x << " " << p.y << " " << p.z << std::endl;
+    }
+    //DPRINT(triangle.size());
+    //print_tdp_set(triangle);
+    //make_obj(triangle, file_name.str());
 }

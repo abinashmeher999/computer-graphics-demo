@@ -24,24 +24,24 @@ int main(int argc, char** argv) {
 //            << end.x << "_" << end.y << "_" << end.z << ".obj";
 
 //  std::ofstream file(file_name.str());
-    ObjWriter objw(std::cout);
-    std::vector<face> facelist = GetFacesHexHed();
-    TDLine tdl(line_points, Axis::Z, true);
+    //ObjWriter objw(std::cout);
+    //std::vector<face> facelist = GetFacesHexHed();
+    //TDLine tdl(line_points, Axis::Z, true);
     //std::cout << "\n";
 
     for (std::vector<tdp>::iterator it = line_points.begin(); it != line_points.end(); it++) {
-        tdhexhed temp_vox = MakeVoxel(*it, 1);
+        //tdhexhed temp_vox = MakeVoxel(*it, 1);
 
-        //std::cout << it->x << "_" << it->y << "_" << it->z << std::endl;
-        for (int i = 0; i < 8; i++) {
-            objw.AddPoint(temp_vox.vertices[i]);
-        }
+        std::cout << it->x << " " << it->y << " " << it->z << std::endl;
+        //for (int i = 0; i < 8; i++) {
+            //objw.AddPoint(temp_vox.vertices[i]);
+        //}
 
-        for (std::vector<face>::iterator fit = facelist.begin(); fit != facelist.end(); fit++) {
-            objw.AddFace(*fit);
-        }
+        //for (std::vector<face>::iterator fit = facelist.begin(); fit != facelist.end(); fit++) {
+            //objw.AddFace(*fit);
+        //}
 
-        objw.EndObj();
+        //objw.EndObj();
     }
 
     return 0;
