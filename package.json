@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "bower": "^1.7.9",
     "express": "^4.14.0",
     "method-override": "^2.3.6",
     "settings-panel": "^1.8.16"
@@ -16,7 +17,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "make && node index.js"
+    "start": "make && node index.js",
+    "postinstall": "./node_modules/bower/bin/bower install"
   },
   "keywords": [
     "computer-graphics",

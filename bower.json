@@ -1,0 +1,27 @@
+{
+  "name": "computer-graphics-demo",
+  "description": "A website for B.Tech Project",
+  "main": "index.js",
+  "authors": [
+    "Abinash Meher"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "computer-graphics",
+    "demo"
+  ],
+  "homepage": "https://github.com/abinashmeher999/computer-graphics-demo",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "dat.gui": "*",
+    "three.js": "^0.80.0"
+  }
+}

@@ -20,7 +20,7 @@ app.use(function (req, res, next) {
 })
 
 app.use(express.static('public'));
-app.use(express.static('bower_components'))
+app.use("/bower_components", express.static('bower_components'))
 
 function sh(cmd) {
     var exec = require('child_process').execSync;
