@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>three.js webgl - teapot buffer geometry</title>
+    <title>Computer Graphics BTP - Demo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
+    <link type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
         body {
-            color: #fff;
-            font-family: Monospace;
-            font-size: 13px;
-            text-align: center;
-            font-weight: bold;
+            /*color: #fff;*/
+            /*font-family: Monospace;*/
+            /*font-size: 13px;*/
+            /*text-align: center;*/
+            /*font-weight: bold;*/
 
             background-color: #000;
             margin: 0px;
@@ -37,15 +38,19 @@
             left: 2px;
         }
 
+        .c {
+            color: #000000;
+        }
+
 
     </style>
+    <link type="text/css" href="css/modal.css" rel="stylesheet" />
 </head>
 <body>
 <div  class = 'moveGUI'>
 </div>
 
 <script src="bower_components/three.js/three.min.js"></script>
-
 
 <script src="OrbitControls.js"></script>
 
@@ -55,18 +60,14 @@
 
 <script src='bower_components/dat.gui/dat.gui.min.js'></script>
 
-<script src='TeapotBufferGeometry.js'></script>
-
 <script src="OBJExporter.js"></script>
 
 <script src="Blob.js"></script>
 
 <script src="FileSaver.min.js"></script>
-<script>
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // Utah/Newell Teapot demo
-    ////////////////////////////////////////////////////////////////////////////////
+
+<script>
     /*global THREE, Detector, container, dat, window */
 
     if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
@@ -102,10 +103,25 @@
         container = document.createElement( 'div' );
         document.body.appendChild( container );
 
+        // TEXTURE MAP
+        var textureMap = new THREE.TextureLoader().load( 'textures/UV_Grid_Sm.jpg', render );
+        textureMap.wrapS = textureMap.wrapT = THREE.RepeatWrapping;
+        textureMap.anisotropy = 16;
+
+        // REFLECTION MAP
+        var path = "textures/cube/skybox/";
+        var urls = [
+            path + "px.jpg", path + "nx.jpg",
+            path + "py.jpg", path + "ny.jpg",
+            path + "pz.jpg", path + "nz.jpg"
+        ];
+
         var loader = new THREE.OBJLoader()
         loader.load("/objs/voxel.obj", function(object) {
             voxel = object;
         });
+
+        textureCube = new THREE.CubeTextureLoader().load( urls , render);
 
         var canvasWidth = window.innerWidth;
         var canvasHeight = window.innerHeight;
@@ -140,21 +156,6 @@
 
         //AXES
         axes = buildAxes( 1000 );
-
-        // TEXTURE MAP
-        var textureMap = new THREE.TextureLoader().load( 'textures/UV_Grid_Sm.jpg' );
-        textureMap.wrapS = textureMap.wrapT = THREE.RepeatWrapping;
-        textureMap.anisotropy = 16;
-
-        // REFLECTION MAP
-        var path = "textures/cube/skybox/";
-        var urls = [
-            path + "px.jpg", path + "nx.jpg",
-            path + "py.jpg", path + "ny.jpg",
-            path + "pz.jpg", path + "nz.jpg"
-        ];
-
-        textureCube = new THREE.CubeTextureLoader().load( urls );
 
         // MATERIALS
         var materialColor = new THREE.Color();
@@ -218,6 +219,7 @@
                                 group.add(temp);
                             }
                             group.name = "uno";
+                            voxelobj = group;
                             scene.add(group);
                             render();
                         },
@@ -263,6 +265,7 @@
                                 group.add(temp);
                             }
                             group.name = "uno";
+                            voxelobj = group;
                             scene.add(group);
                             render();
                         },
@@ -321,6 +324,7 @@
                                                     shading === "textured" ? texturedMaterial : reflectiveMaterial ) ) ) );
                 }
             } );
+            voxelobj = object;
             scene.add( object );
             render();
         }, onProgress, onError );
@@ -436,7 +440,7 @@
             tcoord3 : {x : 0, y : 0, z : 10},
             drawdtr : draw_dtr,
             download : download_obj,
-            obj_name: "Teapot",
+            obj_name: "suzanne",
             drawobj: draw_obj
         };
 
@@ -598,8 +602,8 @@
 
         } else {
             // initial obj
-            var loader = new THREE.OBJLoader();
-            loader.load( '/3ddss/5/0/0/0/10/0', function ( object ) {
+            var loader = new THREE.OBJLoader()
+            loader.load("/objs/voxel.obj", function(object) {
                 object.name = "uno";
                 object.traverse( function ( child ) {
 
@@ -617,7 +621,7 @@
                 voxelobj = object;
                 scene.add(voxelobj);
                 render();
-            } );
+            });
         }
 
 //				var voxelobjGeometry = new THREE.TeapotBufferGeometry( teapotSize,
@@ -672,6 +676,152 @@
 
     }
 
+</script>
+
+<!-- Trigger/Open The Modal -->
+<button id="myBtn" class="btn btn-primary">Compile files</button>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">×</span>
+            <h2>Choose Framework</h2>
+        </div>
+        <div class="modal-body">
+            <form action=" " method="POST">
+                <div class="form-div">
+                    <label>Operating System</label>
+                    <select class="btn btn-default">
+                        <option value="Ubuntu">Ubuntu 12.04 and above</option>
+                        <option value="Vista">Windows Vista</option>
+                        <option value="XP">Windows XP</option>
+                        <option value="Windows7">Windows 7</option>
+                        <option value="Windows8">Windows 8</option>
+                        <option value="Windows8.1">Windows8.1</option>
+                        <option value="Windows10">Windows10</option>
+                        <option value="CentOS">CentOS</option>
+                    </select>
+                    <!-- </div>
+                    <div class="form-div"> -->
+                    <label style="margin-left:15px;">Architecture</label>
+                    <select class="btn btn-default">
+                        <option value="64">64-bit</option>
+                        <option value="32">32-bit</option>
+                    </select>
+                </div>
+                <div class="form-div">
+                    <label >Open GL Version</label>
+                    <select class="btn btn-default">
+                        <option value="4.5">4.5</option>
+                        <option value="4.4">4.4</option>
+                        <option value="4.3">4.3</option>
+                        <option value="4.2">4.2</option>
+                        <option value="4.1">4.1</option>
+                        <option value="4.0">4.0</option>
+                        <option value="3.3">3.3</option>
+                        <option value="3.2">3.2</option>
+                        <option value="3.1">3.1</option>
+                        <option value="3.0">3.0</option>
+                        <option value="3.0LP">3.0 Long Peak</option>
+                        <option value="2.1">2.1</option>
+                        <option value="2.0">2.0</option>
+                        <option value="1.5">1.5</option>
+                        <option value="1.4">1.4</option>
+                        <option value="1.3">1.3</option>
+                        <option value="1.2.1">1.2.1</option>
+                        <option value="1.2">1.2</option>
+                        <option value="1.1">1.1</option>
+                    </select>
+                </div>
+                <div class="form-div">
+                    <label >Open GL Wrapper Library</label>
+                    <select class="btn btn-default">
+                        <option value="GLUT">GLUT</option>
+                        <option value="GLU">GLU</option>
+                        <option value="GLX">GLX</option>
+                        <option value="DRI">DRI</option>
+                        <option value="OpenInventor">Open Inventor</option>
+                        <option value="Coin">Coin</option>
+                        <option value="Gizmo3D">Gizmo3D</option>
+                        <option value="OpenSceneGraph">Open Scene Graph</option>
+                        <option value="OpenRM">OpenRM</option>
+                        <option value="Quesa3D">Quesa3D</option>
+                    </select>
+                </div>
+                <div class="form-div">
+                    <label >Windowing Library</label>
+                    <select class="btn btn-default">
+                        <option value="CEGUI">CEGUI</option>
+                        <option value="EFL">EFL</option>
+                        <option value="FLTK">FLTK</option>
+                        <option value="GTK+">GTK+</option>
+                        <option value="Guiliani">Guiliani</option>
+                        <option value="IUP">IUP</option>
+                        <option value="JUCE">JUCE</option>
+                        <option value="LiveCode">LiveCode</option>
+                        <option value="MKS">MKS Toolkit</option>
+                        <option value="Nana">Nana</option>
+                        <option value="Qt">Qt</option>
+                        <option value="Ultimate++">Ultimate++</option>
+                        <option value="wxWidgets">wxWidgets</option>
+                        <option value="XVT">XVT</option>
+                    </select>
+                </div>
+                <div class="form-div">
+                    <input class="btn btn-default" type="file" name="file[]">
+                    <input type="hidden" id="sub"/>
+                </div>
+                <div class="form-div">
+                    <button class="add_more btn btn-default">Add More Files</button>
+                </div>
+                <div class="form-div">
+                    <input class="btn btn-primary" type="submit" value="Create Executable" />
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <!--<h3>Modal Footer</h3>-->
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Get the modal
+    var modal = document.getElementById('myModal');
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the button, open the modal
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    $(document).ready(function(){
+        $('.add_more').click(function(e){
+            e.preventDefault();
+            $('#sub').before("<input name='file[]' class=\"btn btn-default\" type='file'/>");
+        });
+    });
 </script>
 
 </body>
